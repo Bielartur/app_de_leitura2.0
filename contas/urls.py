@@ -1,11 +1,13 @@
-from contas.views.signin import Signin
-from contas.views.signup import Signup
-from contas.views.user import GetUser
-
-from django.urls import path
+from django.urls import path, reverse_lazy
+from contas.views.editar_perfil import EditarPerfil
+from contas.views.criar_conta import CriarConta
+from django.contrib.auth import views as auth_view
+app_name = "contas"
 
 urlpatterns = [
-    path('login', Signin.as_view()),
-    path('criar_conta', Signup.as_view()),
-    path('user', GetUser.as_view())
+    path('login/', auth_view.LoginView.as_view(template_name='login.html'), name="login"),
+    path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name="logout"),
+    path('editar_perfil/<int:pk>', EditarPerfil.as_view(), name="editar_perfil"),
+    path('criar_conta/', CriarConta.as_view(), name="criar_conta"),
+    path('redefinir_senha/', auth_view.PasswordChangeView.as_view(template_name='editarperfil.html', success_url=reverse_lazy('livros:index')), name="redefinir_senha"),
 ]
