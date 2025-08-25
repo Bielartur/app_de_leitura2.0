@@ -1,8 +1,10 @@
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
 from contas.auth import Authentication
 from contas.serializers import UserSerializer
 
-from rest_framework.response import Response
 
 class Signup(APIView):
     def post(self, request):
@@ -10,8 +12,8 @@ class Signup(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        user = Authentication.signup(self, name=name, email=email, password=password)
+        auth = Authentication()
+        user = auth.signup(name=name, email=email, password=password)
 
         serializer = UserSerializer(user)
-
-        return Response({"user": serializer.data})
+        return Response({"user": serializer.data}, status=status.HTTP_201_CREATED)
