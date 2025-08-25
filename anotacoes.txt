@@ -1,0 +1,10 @@
+1 - Anotação sobre a chave de acesso
+
+A ideia na parte de renovar o token de acesso é a seguinte, o JS vai fazer uma requisição
+assíncrona para a view de access token, e enquanto a requisição não tiver tido alguma
+resposta, irá aparecer o botão mais apagado e com um símbolo de loading rodando e o nome
+"Carregando", o nome de quando não estiver enviando vai ser "Enviar". Caso a resposta
+seja de sucesso a página deverá recarregar e aparecer um popup verdinho no canto da tela
+confirmando que "A Chave de Acesso foi atualizada com sucesso".
+
+2 -
