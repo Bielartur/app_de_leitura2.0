@@ -1,45 +1,34 @@
-from rest_framework.exceptions import AuthenticationFailed, APIException
+from rest_framework.authentication import BaseAuthentication, get_authorization_header
+from rest_framework.exceptions import AuthenticationFailed
+from contas.models import Usuario
 
-from django.contrib.auth.hashers import check_password, make_password
+class AccessKeyAuthentication(BaseAuthentication):
+    """
+    Procura a chave em:
+    - Header: X-Access-Key: <token>
+    - OU Authorization: Key <token>
+    """
 
-from contas.models import User
+    keyword = b"Key"
 
-class Authentication:
-    def signin(self, email=None, password=None) -> User:
-        exception_auth = AuthenticationFailed('Email e/ou senha incorreto(s)')
+    def authenticate(self, request):
+        # 1) X-Access-Key
+        key = request.headers.get("X-Access-Key")
+        if key:
+            return self._authenticate_with_key(key)
 
-        user_exists = User.objects.filter(email=email).exists()
+        # 2) Authorization: Key <token>
+        auth = get_authorization_header(request).split()
+        if auth and auth[0].lower() == self.keyword.lower() and len(auth) == 2:
+            return self._authenticate_with_key(auth[1].decode())
 
-        if not user_exists:
-            raise exception_auth
-        
-        user = User.objects.filter(email=email).first()
+        return None  # sem credencial -> outras auths podem tentar
 
-        if not check_password(password, user.password):
-            raise exception_auth
-        
-        return user
-    
-    def signup(self, name, email, password, company_id=False):
-        if not name or name == '':
-            raise APIException('O nome não deve ser null')
-        
-        if not email or email == '':
-            raise APIException('O email não deve ser null')
-        
-        if not password or password == '':
-            raise APIException('O password não deve ser null')
-        
-        user = User
-        if user.objects.filter(email=email).exists():
-            raise APIException('Este email já existe na plataforma')
-        
-        password_hashed = make_password(password)
-
-        created_user = user.objects.create(
-            name=name,
-            email=email,
-            password=password_hashed,
-        )
-
-        return created_user
+    def _authenticate_with_key(self, token: str):
+        if not token or len(token) != 32:
+            raise AuthenticationFailed("Chave de acesso inválida.")
+        try:
+            user = Usuario.objects.get(access_key=token)
+        except Usuario.DoesNotExist:
+            raise AuthenticationFailed("Chave de acesso não reconhecida.")
+        return (user, None)
