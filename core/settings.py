@@ -39,11 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Rest Framework
+    # Externos
     "rest_framework",
-
-    # Cors headers
     "corsheaders",
+    "widget_tweaks",
 
     # Meus Apps
     "contas",
@@ -65,7 +64,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -114,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'contas.Usuario'
 
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -131,6 +132,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -141,3 +146,5 @@ REST_FRAMEWORK = {
         "contas.authentication.AccessKeyAuthentication",  # chave fixa de 32 chars
     )
 }
+
+LOGIN_REDIRECT_URL = 'dashboard'   # ou '/app/'

@@ -1,0 +1,10 @@
+{% extends 'auth_base.html' %}
+
+{% block page_title %}Criar conta{% endblock %}
+{% block legend_title %}Crie sua conta{% endblock %}
+{% block legend_subtitle %}Cadastre-se para acompanhar suas leituras.{% endblock %}
+{% block submit_text %}Criar conta{% endblock %}
+{% block form_action %}{% url 'contas:criar_conta' %}{% endblock %}
+{% block alt_link %}
+  <span class="text-sm">Já tem conta? <a href="{% url 'contas:login' %}" class="font-semibold hover:border-b-2">Entrar</a></span>
+{% endblock %}
