@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block titulo %}
+    Editar Perfil
+{% endblock %}
+
+{% block content %}
+    <header class="min-h-screen bg-black bg-opacity-75 bg-blend-overlay showcase border-gray-600 border-b-8 flex justify-center items-center bg-no-repeat"  style="background-image: url('{% static 'img/background_netflix.jpg' %}');">
+        <div class="z-10 h-full py-32 md:py-0 text-gray-100 text-center flex items-center flex-col">
+            <h2 class="text-2xl">{{ user.first_name }}</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                <fieldset class="flex flex-col form-group gap-2">
+                    <legend class="border-bottom mb-4">Edite os campos abaixo para editar seu perfil</legend>
+                    {% for campo in form %}
+                        {% if campo.label != "Senha" %}
+                        <label for="" class="text-left">{{ campo.label }}</label>
+                            {% render_field campo class="p-2 bg-gray-900 mb-2 rounded-2 opacity-90 border-1" %}
+                            {% for erro in campo.errors %}
+                                <p class="text-red-600 text-sm mb-2">{{ erro }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
+                <button class="bg-red-600 py-1 px-3 text-white md:text-lg rounded-md mt-2" type="submit">Salvar</button>
+            </form>
+            <small><a href="{% url 'filme:mudarsenha' %}">Quer mudar sua senha?</a></small>
+        </div>
+    </header>
+
+    <footer class=" px-5 py-10 ">
+        <ul class="flex justify-between items-center">
+
+            <li>&copy; 2021</li>
+            <li> Feito com Python (Django)</li>
+            <li>Hashtag</li>
+        </ul>
+    </footer>
+{% endblock %}

@@ -1,0 +1,58 @@
+@keyframes onAutoFillStart {}
+@keyframes onAutoFillCancel {}
+
+:root {
+  --main-color: #2f2557;
+  --ligther-color: #494268;
+  --great-green: #1F6F78;
+  --soft-blue: #85A4BA;
+}
+
+input:-webkit-autofill {
+  animation-name: onAutoFillStart;
+  animation-duration: 10ms;
+}
+
+input:not(:-webkit-autofill) {
+  animation-name: onAutoFillCancel;
+  animation-duration: 10ms;
+}
+
+/* Opcional (Firefox/Chromium modernos): */
+input:autofill {
+  animation-name: onAutoFillStart;
+  animation-duration: 10ms;
+}
+
+body {
+    background: var(--main-color);
+    background: -moz-linear-gradient(to bottom, var(--main-color) 0%, var(--ligther-color) 100%);
+    background: -webkit-linear-gradient(to bottom, var(--main-color) 0%, var(--ligther-color) 100%);
+    background: linear-gradient(to bottom, var(--main-color) 0%, var(--ligther-color) 100%);
+    background-repeat: no-repeat;
+    color: var(--ligther-color);
+}
+
+.gradient-container {
+    background: var(--main-color);
+}
+
+.img-login {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    display: block;
+    border-top-left-radius: 0.25rem;   /* canto superior esquerdo */
+    border-bottom-left-radius: 0.25rem; /* canto inferior esquerdo */
+}
+
+.text-gradient {
+  background: linear-gradient(to right, var(--great-green), var(--ligther-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.input-form {
+    width: calc(100% - 1.8rem);
+}

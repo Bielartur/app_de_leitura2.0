@@ -1,0 +1,11 @@
+{# templates/contas/login.html #}
+{% extends 'auth_base.html' %}
+
+{% block page_title %}Fazer login{% endblock %}
+{% block legend_title %}Login{% endblock %}
+{% block legend_subtitle %}Antes de iniciar sua jornada, faça seu login{% endblock %}
+{% block submit_text %}Fazer Login{% endblock %}
+{% block form_action %}{% url 'contas:login' %}{% endblock %}
+{% block alt_link %}
+  <span class="text-sm">Não tem conta? <a href="{% url 'contas:criar_conta' %}" class="font-semibold hover:border-b-2">Crie aqui</a></span>
+{% endblock %}
