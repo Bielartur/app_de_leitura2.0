@@ -1,0 +1,88 @@
+<header
+  id="topbar"
+  class="flex items-center justify-center border-b border-slate-200 bg-white/80 backdrop-blur px-3 font-semibold transition ease-in-out"
+>
+  <div class="w-full flex items-center justify-between h-[var(--navbar-height)] max-w-6xl">
+
+    <!-- Brand -->
+    <div class="flex gap-3 items-center">
+      <div class="bg-[var(--great-green)]/25 px-3 py-2 rounded-lg">
+        <i class="fa-solid fa-book text-3xl text-[var(--great-green)] mt-[0.2rem]"></i>
+      </div>
+      <span class="flex flex-col">
+        <h1 class="text-[1.65rem] leading-7 font-semibold text-gradient">Habook</h1>
+        <p class="text-sm text-slate-600">Sua jornada literária</p>
+      </span>
+    </div>
+
+    <!-- Botão hamburguer (mostra até md) -->
+    <button
+      id="nav-toggle"
+      class="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:bg-slate-200 hover:text-slate-700"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+      type="button"
+    >
+      <span class="sr-only">Abrir menu</span>
+      <i class="fa-solid fa-bars text-xl"></i>
+    </button>
+
+    <!-- Nav desktop (a partir de md) -->
+    <nav class="hidden md:flex md:gap-2 lg:gap-4">
+      <a href="{% url 'livros:dashboard' %}"
+         class="py-2 px-4 rounded-lg {% if request.path == '' or request.path == '/' %}active{% else %}text-slate-600 hover:bg-slate-200 hover:text-slate-700{% endif %} whitespace-nowrap">
+        <span class="flex gap-2 items-center {% if request.path == '' or request.path == '/' %}text-gradient{% endif %}">
+          <i class="fa-solid fa-home"></i> Dashboard
+        </span>
+      </a>
+
+      <a href="{% url 'livros:concluidos' %}"
+         class="py-2 px-4 rounded-lg {% if request.path|slice:'-17:' == 'livros_concluidos' %}active{% else %}text-slate-600 hover:bg-slate-200 hover:text-slate-700{% endif %} whitespace-nowrap">
+        <span class="flex gap-2 items-center {% if request.path|slice:'-17:' == 'livros_concluidos' %}text-gradient{% endif %}">
+          <i class="fa-regular fa-circle-check"></i> Livros Concluídos
+        </span>
+      </a>
+
+      <form method="post" action="{% url 'contas:logout' %}">
+        {% csrf_token %}
+        <button
+          class="py-2 px-4 rounded-lg flex gap-2 items-center text-slate-600 hover:bg-slate-200 hover:text-slate-700 cursor-pointer"
+          type="submit"
+        >
+          Sair
+          <i class="fa-solid fa-right-from-bracket mt-[0.2rem]"></i>
+        </button>
+      </form>
+    </nav>
+  </div>
+
+  <!-- Menu mobile (dropdown) -->
+  <div id="mobile-menu" class="md:hidden w-full max-w-[52rem] mx-auto px-3 pb-3 hidden">
+    <div class="mt-2 flex flex-col gap-1 rounded-lg border border-slate-200 bg-white/90 p-2 shadow-sm">
+      <a href="{% url 'livros:dashboard' %}"
+         class="py-2 px-3 rounded-md {% if request.path == '' or request.path == '/' %}active{% else %}text-slate-700 hover:bg-slate-100{% endif %}">
+        <span class="flex gap-2 items-center {% if request.path == '' or request.path == '/' %}text-gradient{% endif %}">
+          <i class="fa-solid fa-home"></i> Dashboard
+        </span>
+      </a>
+
+      <a href="{% url 'livros:concluidos' %}"
+         class="py-2 px-3 rounded-md {% if request.path|slice:'-17:' == 'livros_concluidos' %}active{% else %}text-slate-700 hover:bg-slate-100{% endif %}">
+        <span class="flex gap-2 items-center {% if request.path|slice:'-17:' == 'livros_concluidos' %}text-gradient{% endif %}">
+          <i class="fa-regular fa-circle-check"></i> Livros Concluídos
+        </span>
+      </a>
+
+      <form method="post" action="{% url 'contas:logout' %}">
+        {% csrf_token %}
+        <button
+          class="py-2 px-3 rounded-md flex gap-2 items-center text-slate-700 hover:bg-slate-100 cursor-pointer"
+          type="submit"
+        >
+          Sair
+          <i class="fa-solid fa-right-from-bracket mt-[0.2rem]"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</header>

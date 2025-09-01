@@ -1,0 +1,94 @@
+@import "base.css";
+
+:root {
+    --vermelho-background: #fbebec;
+    --vermelho-icone: #d33f48;
+    --amarelo-background: #fcf9c5;
+    --amarelo-icone: #c58e1b;
+    --warning-color: #f59e0b;
+    --verde-background: #dffce7;
+    --verde-icone: #32a24c;
+    --azul-background: #ddeafe;
+    --azul-icone: #3f61e9;
+    --roxo-background: #f3e8ff;
+    --roxo-icone: #9334e8;
+}
+
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.card {
+    padding: 1rem;
+    transition: 0.3s all ease;
+}
+
+.card:hover {
+    transform: translateY(-0.4rem) scale(1.01);
+}
+
+.card div strong {
+    color: var(--main-text-color);
+}
+
+.card-subtitle{
+    width: 100%;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.03rem;
+}
+
+.saldo span {
+    font-size: 1.1rem;
+    font-weight: 450;
+}
+
+.positive-value {
+    color: var(--verde-positivo);
+    font-weight: 600;
+}
+
+.neutral-value {
+    color: var(--p-color);
+    font-weight: 600;
+}
+
+.warning-value {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+.negative-value {
+    color: var(--vermelho-negativo);
+    font-weight: 600;
+}
+
+.div-icone-card {
+    padding: 0.9rem 0.85rem;
+    border-radius: 2rem;
+    font-size: 1.4rem;
+}
+
+.fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, var(--great-green), var(--lighter-color));
+    border-radius: 1rem;
+    animation: fillBar 1.6s ease-out forwards;
+}
+
+@keyframes fillBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--target); /* vai até o valor final */
+  }
+}
+
+.pct-diaria {
+    font-size: 0.9rem;
+    font-weight: 500;
+}

@@ -6,5 +6,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     # path("/", include("livros.urls", namespace="livros")),
-    path("contas/", include("contas.urls")),
+    path("contas/", include("contas.urls"), name="contas"),
+    path("", include("livros.urls"), name="livros"),
 ] + static(settings.STATIC_URL, document_root=getattr(settings, "STATIC_ROOT", None))

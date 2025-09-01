@@ -1,0 +1,30 @@
+{% load tags_customizadas %}
+
+<div class="bg-white rounded-xl p-4 shadow-md border border-slate-200/60 hover:shadow-lg transition-all duration-300 fade-in"
+     style="animation-delay: 0.9s">
+    <div class="flex items-start space-x-3"><img
+            src="{{ url_img }}"
+            alt="O Homem Mais Rico da Babilônia" class="w-12 h-16 object-cover rounded-lg shadow-sm">
+        <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-slate-800 text-sm truncate">
+                {{ titulo }}
+            </h3>
+            <p class="text-xs text-slate-500 mb-2">{{ autor }}</p>
+            <div class="flex items-center space-x-1 mb-1">
+                {# cheias #}
+                {% for _ in qtd_estrelas|times %}
+                    <i class="fa-solid fa-star text-yellow-400"></i>
+                {% endfor %}
+
+                {# vazias = 5 - qtd_estrelas #}
+                {% for _ in 5|sub:qtd_estrelas|times %}
+                    <i class="fa-regular fa-star text-slate-300"></i>
+                {% endfor %}
+            </div>
+            <div class="flex items-center space-x-1">
+                <i class="fa-regular fa-check-circle text-emerald-500 text-xs"></i>
+
+                <span class="text-xs text-slate-500">{{ data_conclusao }}</span></div>
+        </div>
+    </div>
+</div>

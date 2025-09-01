@@ -2,10 +2,13 @@
 @keyframes onAutoFillCancel {}
 
 :root {
-  --main-color: #2f2557;
-  --ligther-color: #494268;
-  --great-green: #1F6F78;
+  --main-color: hsl(252, 56%, 24%);
+  --lighter-color: hsl(from var(--main-color) h calc(s - 10) calc(l + 9));
+  --great-green: hsl(186, 80%, 35%);
+  --mid-blue: hsl(207, 57%, 36%);
   --soft-blue: #85A4BA;
+  --light-body: hsl(210,50%,97%);
+  --navbar-height: 4.2rem;
 }
 
 input:-webkit-autofill {
@@ -24,13 +27,43 @@ input:autofill {
   animation-duration: 10ms;
 }
 
-body {
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dark-body {
     background: var(--main-color);
-    background: -moz-linear-gradient(to bottom, var(--main-color) 0%, var(--ligther-color) 100%);
-    background: -webkit-linear-gradient(to bottom, var(--main-color) 0%, var(--ligther-color) 100%);
-    background: linear-gradient(to bottom, var(--main-color) 0%, var(--ligther-color) 100%);
+    background: -moz-linear-gradient(to bottom, var(--main-color) 0%, var(--lighter-color) 100%);
+    background: -webkit-linear-gradient(to bottom, var(--main-color) 0%, var(--lighter-color) 100%);
+    background: linear-gradient(to bottom, var(--main-color) 0%, var(--lighter-color) 100%);
     background-repeat: no-repeat;
-    color: var(--ligther-color);
+    color: var(--lighter-color);
+}
+
+.btn-action {
+  width: 100%;
+  padding: 0.6rem;
+  background-color: var(--main-color);
+  color: white;
+  margin: 0 auto;
+  transition: all ease-in-out 0.2s;
+}
+.btn-action:hover {
+  background-color: hsl(from var(--main-color) h calc(s + 4) calc(l + 4));
+  transform: scale(1.01);
+  box-shadow: 8px 8px 15px calc(var(--main-color) / 2);
 }
 
 .gradient-container {
@@ -48,11 +81,35 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(to right, var(--great-green), var(--ligther-color));
+    background: linear-gradient(to left, var(--great-green), var(--lighter-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .input-form {
     width: calc(100% - 1.8rem);
+}
+
+/* Header sólido com gradiente, sem transparência */
+#topbar {
+  position: relative;
+  min-height: var(--navbar-height);
+  /* fallback sólido */
+  /* background-color: var(--main-color); */
+
+  /* opcional para fixar no topo */
+  position: sticky; top: 0; z-index: 100;
+}
+
+
+.active {
+  color: var(--great-green);
+  background: rgba(134, 173, 204, 0.28); /* #86adcc ~35% */
+  /* border: 1px solid var(--great-green); */
+  /* box-shadow: 0 8px 24px rgba(31, 11, 120, 0.12); */
+}
+
+.active:hover {
+  color: hsl(from var(--great-green) h calc(s + 12) calc(l + 2));
+  background: rgba(134, 173, 204, 0.21);
 }

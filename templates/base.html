@@ -13,9 +13,13 @@
     
     <!-- Meu CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
     {% block head %} {% endblock %}
 </head>
-<body class="h-screen">
-{% block body %} {% endblock %}
+<body class="h-screen min-h-screen {% block class_body %}dark-body{% endblock %}">
+    {% block body %} {% endblock %}
+    {% block script %}{% endblock %}
+
+    <script src="{% static 'js/menuHamburguer.js' %}"></script>
 </body>
 </html>
