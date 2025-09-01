@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-c%h9n0m!f2s!3(6)8*5(^m@b9l8razr9e%vychhj$6)@0!plfk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,11 +46,12 @@ INSTALLED_APPS = [
 
     # Meus Apps
     "contas",
+    "livros"
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -147,4 +148,4 @@ REST_FRAMEWORK = {
     )
 }
 
-LOGIN_REDIRECT_URL = 'dashboard'   # ou '/app/'
+LOGIN_REDIRECT_URL = 'livros:dashboard'   # ou '/app/'
