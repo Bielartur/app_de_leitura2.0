@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+{% endblock %}
+
+{% block class_body %} bg-[var(--light-body)] {% endblock %}
+
+{% block body %}
+    {% include 'includes/navbar.html' %}
+    <main class="flex-1">
+        <section class="py-8 w-full max-w-6xl mx-auto mb-4 flex flex-col items-center justify-center gap-4 px-4 xl:px-0">
+            <div class="text-center fade-in" style="opacity: 0; transform: none;">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-gradient mb-4">
+                        Sua Jornada de Leitura
+                    </h1>
+                </div>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                    Acompanhe seu progresso, mantenha a consistência e alcance suas metas de leitura
+                </p>
+            </div>
+
+            <div class="w-full py-4 grid grid-cols-[repeat(auto-fit,_minmax(16rem,_1fr))] gap-5">
+
+                {% include 'includes/card.html' with qtd=857 bg_color="blue-100" text_color="blue-600" class_icon="fa-solid fa-book" pct_concluida=65 label="Este mês" descricao_qtd="páginas lidas" animation_delay="0.1s" %}
+
+                {% include 'includes/card.html' with qtd=12 bg_color="cyan-100" text_color="[var(--great-green)]" class_icon="fa-solid fa-fire" label="Sequência" descricao_qtd="dias consecutivos" texto_positivo="Mantendo o rítmo" animation_delay="0.2s" %}
+
+                {% include 'includes/card.html' with qtd=3 bg_color="violet-100" text_color="violet-600" class_icon="fa-regular fa-calendar" label="Em andamento" descricao_qtd="livros ativos" add_livro=True animation_delay="0.3s" %}
+            </div>
+
+            <div class="p-6 pb-2 flex flex-col flex-grow gap-2 bg-white text-slate-600 shadow-md rounded-xl w-full fade-in"
+                 style="animation-delay: 0.4s">
+
+                <div class="w-full min-h-18 flex justify-between">
+                    <div>
+                        <div class="flex items-center flex-wrap">
+                            <div class="bg-indigo-100 w-10 h-10 rounded-lg text-indigo-500 text-xl flex items-center justify-center mr-3">
+                                <i class="fa-regular fa-calendar"></i>
+                            </div>
+                            <div class="h-full flex flex-col justify-between">
+                                <h2 class="font-semibold text-xl text-slate-800">Progresso Mensal</h2>
+                                <p class="text-sm text-slate-500">Agosto 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <p class="text-sm text-slate-500 whitespace-nowrap">
+                            <i class="fa-solid fa-bullseye"></i>
+                            <span>Meta: 1000 páginas</span>
+                        </p>
+                        <strong class="text-slate-800 text-2xl">847 / 1000</strong>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-slate-600 font-semibold">Progresso da meta</p>
+                        <strong class="text-sm text-semibold text-[var(--great-green)]">85%</strong>
+                    </div>
+                    <div class="w-full h-[0.8rem] rounded-full bg-gray-200">
+                        <div class="h-full rounded-full relative overflow-hidden fill" style="--target: 85%"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-[0.75rem] text-slate-500">Faltam 153 páginas</p>
+                        <p class="text-[0.75rem] text-slate-500">51 páginas/dia restantes</p>
+                    </div>
+                </div>
+
+                <div class="w-full h-64 sm:h-72 mt-3">
+                    <p class="text-slate-600 font-semibold">Páginas por Dia</p>
+                    <div id="bar-chart"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="mb-12 max-w-6xl mx-auto px-4 fade-in xl:px-0"
+                 style="opacity: 1; transform: none; animation-delay: 0.5s">
+            <div class="flex items-center justify-between gap-4 mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Livros em Andamento
+                </h2>
+                <button class="flex items-center space-x-2 px-4 py-2
+                       bg-gradient-to-r from-[var(--great-green)] to-[var(--mid-blue)]
+                       text-white rounded-xl
+                       hover:brightness-110
+                       transition duration-300 ease-in-out cursor-pointer"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="whitespace-nowrap">Novo Livro</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                {% include 'livros/includes/card_livro_andamento.html' with titulo="O Poder do Hábito" autor="Charles Duhigg" dias_em_andamento=592 pag_totais=408 pag_atual=245 progresso_pct=65 pag_restantes=163 pct_restante=40 url_img="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=300" %}
+
+                {% include 'livros/includes/card_livro_andamento.html' with titulo="Sapiens" autor="Yuval Noah Harari" dias_em_andamento=599 pag_totais=512 pag_atual=156 progresso_pct=30 pag_restantes=356 pct_restante=70 url_img="https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300" %}
+
+                {% include 'livros/includes/card_livro_andamento.html' with titulo="Hábitos Atômicos" autor="James Clear" dias_em_andamento=587 pag_totais=320 pag_atual=89 progresso_pct=28 pag_restantes=231 pct_restante=72 url_img="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=300" %}
+
+            </div>
+        </section>
+
+        <section class="pb-8 max-w-6xl mx-auto px-4 fade-in xl:px-0"
+                 style="opacity: 1; transform: none; animation-delay: 0.8s;">
+            <div class="flex items-center justify-between gap-4 mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Concluídos Recentemente
+                </h2>
+                <a class="text-[var(--great-green)] hover:text-[var(--mid-blue)] font-medium transition-colors whitespace-nowrap"
+                   href="{% url 'livros:concluidos' %}">
+                    Ver todos →
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                {% include 'livros/includes/card_concluidos_recentemente.html' with titulo="O Homem Mais Rico da Babilônia" autor="George S. Clason" qtd_estrelas=5 data_conclusao="09/01/2024" url_img="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=300" %}
+
+                {% include 'livros/includes/card_concluidos_recentemente.html' with titulo="Mindset" autor="Carol Dweck" qtd_estrelas=4 data_conclusao="04/01/2024" url_img="https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300" %}
+
+            </div>
+        </section>
+    </main>
+
+    {% include  'includes/modal_add_livro.html' %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="{% static 'js/abrirModalLivro.js' %}"></script>
+    <script>
+        /**
+         * Gráfico de barras com degradê (tema claro).
+         * @param {string|HTMLElement} el
+         * @param categories:string[], data:number[], title?:string, colorFrom?:string, colorTo?:string opts
+         */
+        function renderBarChartGradient(el, {
+            categories,
+            data,
+            title = '',
+            colorFrom = '#F59E0B', // amber-500
+            colorTo = '#EF4444'  // red-500
+        }) {
+            const target = typeof el === 'string' ? document.querySelector(el) : el;
+
+            const options = {
+                chart: {type: 'bar', height: 260, toolbar: {show: false}, background: 'transparent'},
+                theme: {mode: 'light'},
+                series: [{name: title || 'Série', data}],
+                colors: [colorFrom],
+                xaxis: {
+                    categories,
+                    axisBorder: {show: false},
+                    axisTicks: {show: false},
+                    labels: {
+                        formatter: (value) => value // padrão = mostra tudo
+                    }
+                },
+                yaxis: {labels: {formatter: v => v.toLocaleString('pt-BR')}},
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '75%',
+                        dataLabels: {position: 'top'}
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: v => v,
+                    offsetY: -20,
+                    style: {fontSize: '12px'}
+                },
+                grid: {strokeDashArray: 4},
+                tooltip: {theme: 'light'},
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        type: 'vertical',
+                        shade: 'light',
+                        shadeIntensity: 0.2,
+                        gradientToColors: [colorTo],
+                        opacityFrom: 0.95,
+                        opacityTo: 0.85,
+                        stops: [0, 100]
+                    }
+                },
+                title: title ? {text: title, style: {fontWeight: 600}} : undefined,
+
+                // <<< Ajuste responsivo >>>
+                responsive: [
+                    {
+                        breakpoint: 768, // md do Tailwind
+                        options: {
+                            xaxis: {
+                                labels: {
+                                    formatter: (value) => {
+                                        // mostra só números pares
+                                        return parseInt(value) % 2 === 0 ? value : '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            const chart = new ApexCharts(target, options);
+            chart.render();
+            return chart;
+        }
+
+        // Exemplo de uso
+        const categories = Array.from({length: 30}, (_, i) => String(i + 1).padStart(2, '0'));
+        const data = [43, 22, 28, 52, 27, 29, 35, 33, 30, 32, 34, 29, 31, 15, 32, 35, 12, 40, 42, 39, 41, 31, 44, 46, 12, 47, 49, 50, 25, 15];
+
+        const chart = renderBarChartGradient('#bar-chart', {
+            title: ' ',
+            categories,
+            data,
+            colorFrom: 'hsl(252, 46%, 33%)',
+            colorTo: 'hsl(186, 80%, 35%)'
+        });
+    </script>
+
+{% endblock %}
