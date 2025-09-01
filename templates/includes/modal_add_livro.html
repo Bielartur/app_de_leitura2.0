@@ -1,0 +1,33 @@
+<!-- Modal (overlay + painel) -->
+<div id="modalRoot"
+     class="fixed inset-0 z-120 hidden"
+     aria-hidden="true">
+  <!-- Overlay -->
+  <div id="modalOverlay"
+       class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-200 ease-out z-10"></div>
+
+  <!-- Painel -->
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div id="modalPanel"
+         role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+         class="w-full max-w-md rounded-2xl bg-white shadow-xl
+                opacity-0 scale-95 translate-y-2
+                transition-all duration-200 ease-out z-20">
+      <div class="p-6">
+        <h2 id="modalTitle" class="text-lg font-semibold">Título do modal</h2>
+        <p class="mt-2 text-sm text-gray-600">
+          Seu conteúdo vai aqui. Simples, direto e com animação suave.
+        </p>
+
+        <div class="mt-6 flex justify-end gap-3">
+          <button id="cancelBtn" class="px-3 py-2 rounded-md border border-gray-300">
+            Cancelar
+          </button>
+          <button class="px-3 py-2 rounded-md bg-indigo-600 text-white">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
