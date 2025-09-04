@@ -113,3 +113,10 @@ input:autofill {
   color: hsl(from var(--great-green) h calc(s + 12) calc(l + 2));
   background: rgba(134, 173, 204, 0.21);
 }
+
+.border-gradient {
+    background: linear-gradient(#FFF, #FFF) padding-box, linear-gradient(90deg, var(--great-green), var(--lighter-color)) border-box;
+    border-radius: 1rem;
+    border: 3px solid transparent;
+    outline: none;
+}
