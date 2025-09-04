@@ -1,8 +1,10 @@
 const openBtn   = document.getElementById('openModalBtn');
-  const modalRoot = document.getElementById('modalRoot');
-  const overlay   = document.getElementById('modalOverlay');
-  const panel     = document.getElementById('modalPanel');
-  const cancelBtn = document.getElementById('cancelBtn');
+const openBtn2   = document.getElementById('openModalBtn2');
+const modalRoot = document.getElementById('modalRoot');
+const overlay   = document.getElementById('modalOverlay');
+const panel     = document.getElementById('modalPanel');
+const cancelBtn = document.getElementById('cancelBtn');
+const cancelBtn2 = document.getElementById('cancelBtn2');
 
   let lastFocus = null;
 
@@ -45,6 +47,8 @@ const openBtn   = document.getElementById('openModalBtn');
 
   // abrir
   openBtn.addEventListener('click', openModal);
+  openBtn2.addEventListener('click', openModal)
   // fechar por botões/overlay
   cancelBtn.addEventListener('click', closeModal);
+  cancelBtn2.addEventListener('click', closeModal);
   overlay.addEventListener('click', closeModal);
