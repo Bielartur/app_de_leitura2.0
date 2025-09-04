@@ -28,7 +28,7 @@
 
             <div class="w-full py-4 grid grid-cols-[repeat(auto-fit,_minmax(16rem,_1fr))] gap-5">
 
-                {% include 'includes/card.html' with qtd=857 bg_color="blue-100" text_color="blue-600" class_icon="fa-solid fa-book" pct_concluida=65 label="Este mês" descricao_qtd="páginas lidas" animation_delay="0.1s" %}
+                {% include 'includes/card.html' with qtd=857 bg_color="indigo-100" text_color="[var(--mid-blue)]" class_icon="fa-solid fa-book" pct_concluida=65 label="Este mês" descricao_qtd="páginas lidas" animation_delay="0.1s" %}
 
                 {% include 'includes/card.html' with qtd=12 bg_color="cyan-100" text_color="[var(--great-green)]" class_icon="fa-solid fa-fire" label="Sequência" descricao_qtd="dias consecutivos" texto_positivo="Mantendo o rítmo" animation_delay="0.2s" %}
 
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center mt-2">
                         <p class="text-sm text-slate-600 font-semibold">Progresso da meta</p>
                         <strong class="text-sm text-semibold text-[var(--great-green)]">85%</strong>
                     </div>
@@ -87,7 +87,8 @@
                 <h2 class="text-2xl font-bold text-slate-800">
                     Livros em Andamento
                 </h2>
-                <button class="flex items-center space-x-2 px-4 py-2
+                <button id="openModalBtn2"
+                        class="flex items-center space-x-2 px-4 py-2
                        bg-gradient-to-r from-[var(--great-green)] to-[var(--mid-blue)]
                        text-white rounded-xl
                        hover:brightness-110

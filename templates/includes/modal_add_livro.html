@@ -1,33 +1,135 @@
+{% load static %}
+
 <!-- Modal (overlay + painel) -->
 <div id="modalRoot"
      class="fixed inset-0 z-120 hidden"
+      style="overscroll-behavior: contain"
      aria-hidden="true">
-  <!-- Overlay -->
-  <div id="modalOverlay"
-       class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-200 ease-out z-10"></div>
+    <!-- Overlay -->
+    <div id="modalOverlay"
+         class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-200 ease-out z-10"></div>
 
-  <!-- Painel -->
-  <div class="absolute inset-0 flex items-center justify-center p-4">
-    <div id="modalPanel"
-         role="dialog" aria-modal="true" aria-labelledby="modalTitle"
-         class="w-full max-w-md rounded-2xl bg-white shadow-xl
+    <!-- Painel -->
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div id="modalPanel"
+             role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+             class="w-full max-w-md rounded-2xl bg-white shadow-xl
                 opacity-0 scale-95 translate-y-2
                 transition-all duration-200 ease-out z-20">
-      <div class="p-6">
-        <h2 id="modalTitle" class="text-lg font-semibold">Título do modal</h2>
-        <p class="mt-2 text-sm text-gray-600">
-          Seu conteúdo vai aqui. Simples, direto e com animação suave.
-        </p>
 
-        <div class="mt-6 flex justify-end gap-3">
-          <button id="cancelBtn" class="px-3 py-2 rounded-md border border-gray-300">
-            Cancelar
-          </button>
-          <button class="px-3 py-2 rounded-md bg-indigo-600 text-white">
-            Confirmar
-          </button>
+            <div class="py-6 px-4">
+                <div class="flex items-center justify-between border-b border-slate-200 mb-4 pb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-blue-100 rounded-lg">
+                            <i class="fa-solid fa-plus text-blue-600"></i>
+                        </div>
+                        <div><h2 id="modalTitle" class="text-xl font-bold text-slate-800">Adicionar Livro</h2>
+                            <p class="text-sm text-slate-500">Comece uma nova jornada de leitura</p></div>
+                    </div>
+                    <button class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <i id="cancelBtn2" class="fa-solid fa-x"></i>
+                    </button>
+                </div>
+
+                <div class="flex-1 relative">
+                    <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input
+                                    type="text"
+                                    placeholder="Buscar por título ou autor..."
+                                    class="w-full pl-10 pr-4 py-3 bg-white rounded-xl border-gradient"
+                                    id="pesquisa-autor"
+                            />
+
+                        <!-- Dropdown de resultados -->
+                        <div id="resultado-busca"
+                             class="absolute z-20 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl hidden max-h-64 overflow-auto">
+                            <!-- resultados aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <form class="space-y-4 mt-4" id="form-livro" method="post">
+                    {% csrf_token %}
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
+                                <i class="fa-solid fa-book"></i>
+                                <span>Título do Livro *</span>
+                            </label>
+                            <input type="text" id="titulo-livro" placeholder="Ex: O Poder do Hábito"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
+                                   required value="">
+                        </div>
+
+                        <div class="w-1/2">
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
+                                <i class="fa-regular fa-user"></i>
+                                <span>Autor *</span>
+                            </label>
+                            <input type="text" id="autor-livro" placeholder="Ex: Charles Duhigg"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
+                                   required value="">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
+                                <i class="fa-solid fa-hashtag"></i>
+                                <span>Total de Páginas *</span>
+                            </label>
+                            <input type="number" id="total-paginas" placeholder="408" min="1"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
+                                   required value="">
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
+                                <i class="fa-solid fa-hashtag"></i>
+                                <span>Página Atual</span>
+                            </label>
+                            <input type="number" id="pagina-atual" placeholder="0" min="0"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
+                                   value="0">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>Data de Início</span>
+                        </label>
+                        <input type="date" id="data-inicio"
+                               class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
+                               value="2025-09-01">
+                    </div>
+
+                    <!-- opcionais/ocultos para salvar metadados -->
+                    <input type="hidden" id="isbn">
+                    <input type="hidden" id="capa-url">
+                    <input type="hidden" id="google-id">
+
+                    <div class="flex space-x-3 pt-4">
+                        <button type="button"
+                                id="cancelBtn"
+                                class="flex-1 px-3 py-2 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-200 hover:text-slate-700 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                                class="flex-1 px-3 py-2 bg-gradient-to-r from-[var(--great-green)] to-[var(--mid-blue)]
+                                       text-white rounded-xl
+                                       hover:brightness-110
+                                       transition duration-300 ease-in-out cursor-pointer font-medium">
+                            Adicionar Livro
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
+
+
+{% block script %}
+    <script src="{% static 'js/pesquisarLivro.js' %}"></script>
+{% endblock %}
