@@ -6,5 +6,5 @@ app_name = "livros"
 
 urlpatterns = [
     path("", LivroListView.as_view(), name="dashboard"),
-    path("/livros_concluidos", LivroDoneListView.as_view(), name="concluidos"),
+    path("livros_concluidos", LivroDoneListView.as_view(), name="concluidos"),
 ]

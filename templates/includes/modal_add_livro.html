@@ -3,7 +3,7 @@
 <!-- Modal (overlay + painel) -->
 <div id="modalRoot"
      class="fixed inset-0 z-120 hidden"
-      style="overscroll-behavior: contain"
+     style="overscroll-behavior: contain"
      aria-hidden="true">
     <!-- Overlay -->
     <div id="modalOverlay"
@@ -33,13 +33,13 @@
 
                 <div class="flex-1 relative">
                     <div class="relative">
-                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                            <input
-                                    type="text"
-                                    placeholder="Buscar por título ou autor..."
-                                    class="w-full pl-10 pr-4 py-3 bg-white rounded-xl border-gradient"
-                                    id="pesquisa-autor"
-                            />
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input
+                                type="text"
+                                placeholder="Buscar por título ou autor..."
+                                class="w-full pl-10 pr-4 py-3 bg-white rounded-xl border-gradient"
+                                id="pesquisa-autor"
+                        />
 
                         <!-- Dropdown de resultados -->
                         <div id="resultado-busca"
@@ -51,75 +51,128 @@
 
                 <form class="space-y-4 mt-4" id="form-livro" method="post">
                     {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="p-3 rounded-lg bg-red-50 text-red-700">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
                     <div class="flex gap-4">
                         <div class="w-1/2">
-                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
-                                <i class="fa-solid fa-book"></i>
-                                <span>Título do Livro *</span>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2"
+                                   for="{{ form.titulo.id_for_label }}">
+                                <i class="fa-solid fa-book"></i><span>{{ form.titulo.label }}</span>
                             </label>
-                            <input type="text" id="titulo-livro" placeholder="Ex: O Poder do Hábito"
-                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
-                                   required value="">
+                            {{ form.titulo }}
+                            {% if form.titulo.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ form.titulo.errors|striptags }}</p>{% endif %}
                         </div>
 
                         <div class="w-1/2">
-                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
-                                <i class="fa-regular fa-user"></i>
-                                <span>Autor *</span>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2"
+                                   for="{{ form.autor.id_for_label }}">
+                                <i class="fa-regular fa-user"></i><span>{{ form.autor.label }}</span>
                             </label>
-                            <input type="text" id="autor-livro" placeholder="Ex: Charles Duhigg"
-                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
-                                   required value="">
+                            {{ form.autor }}
+                            {% if form.autor.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ form.autor.errors|striptags }}</p>{% endif %}
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
-                                <i class="fa-solid fa-hashtag"></i>
-                                <span>Total de Páginas *</span>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2"
+                                   for="{{ form.total_paginas.id_for_label }}">
+                                <i class="fa-solid fa-hashtag"></i><span>{{ form.total_paginas.label }}</span>
                             </label>
-                            <input type="number" id="total-paginas" placeholder="408" min="1"
-                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
-                                   required value="">
+                            {{ form.total_paginas }}
+                            {% if form.total_paginas.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ form.total_paginas.errors|striptags }}</p>{% endif %}
                         </div>
+
                         <div>
-                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
-                                <i class="fa-solid fa-hashtag"></i>
-                                <span>Página Atual</span>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2"
+                                   for="{{ form.pag_atual.id_for_label }}">
+                                <i class="fa-solid fa-hashtag"></i><span>{{ form.pag_atual.label }}</span>
                             </label>
-                            <input type="number" id="pagina-atual" placeholder="0" min="0"
-                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
-                                   value="0">
+                            {{ form.pag_atual }}
+                            {% if form.pag_atual.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ form.pag_atual.errors|striptags }}</p>{% endif %}
                         </div>
                     </div>
 
-                    <div>
-                        <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2">
-                            <i class="fa-regular fa-calendar"></i>
-                            <span>Data de Início</span>
-                        </label>
-                        <input type="date" id="data-inicio"
-                               class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none transition-colors"
-                               value="2025-09-01">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="relative"> <!-- relative p/ posicionar o dropdown -->
+                            <div class="flex justify-between">
+                                <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2"
+                                       for="{{ form.categoria.id_for_label }}">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span>{{ form.categoria.label }}</span>
+                                </label>
+
+                                <button type="button" id="abrir-dropdown-categoria"
+                                        class="text-xs text-cyan-800">
+                                    <i class="fa-solid fa-plus px-2 py-1 mb-1 bg-cyan-100 rounded-lg cursor-pointer"></i>
+                                </button>
+                            </div>
+
+                            {{ form.categoria }} {# certifique-se que o widget tem id="categoria-livro" #}
+                            {% if form.categoria.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ form.categoria.errors|striptags }}</p>
+                            {% endif %}
+
+                            <!-- Fallback: se criação via JS falhar, mando esse texto no POST do form -->
+                            <input type="hidden" id="categoria-livro-hidden" name="categoria_text">
+
+                            <!-- DROPDOWN -->
+                            <div id="dropdown-categoria"
+                                 class="absolute -left-2 top-5 mt-1 w-72 bg-white border border-slate-200 rounded-xl shadow-lg p-3 z-30 hidden">
+                                <div class="text-sm font-medium text-slate-700 mb-2">Nova categoria</div>
+
+                                <input type="text" id="nova-categoria-input"
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--great-green)] focus:border-[var(--great-green)] outline-none"
+                                       placeholder="Ex.: Não-ficção">
+
+                                <div class="flex gap-2 mt-3">
+                                    <button type="button" id="criar-categoria-btn"
+                                            class="px-3 py-2 bg-gradient-to-r from-[var(--great-green)] to-[var(--mid-blue)] text-white rounded-lg hover:brightness-110 disabled:opacity-60">
+                                        Criar
+                                    </button>
+                                    <button type="button" id="cancelar-categoria-btn"
+                                            class="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">
+                                        Cancelar
+                                    </button>
+                                </div>
+
+                                <p id="categoria-feedback" class="text-xs mt-2 text-slate-500 hidden"></p>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 ml-2"
+                                   for="{{ form.data_inicio.id_for_label }}">
+                                <i class="fa-regular fa-calendar"></i><span>{{ form.data_inicio.label }}</span>
+                            </label>
+                            {{ form.data_inicio }}
+                            {% if form.data_inicio.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ form.data_inicio.errors|striptags }}</p>{% endif %}
+                        </div>
                     </div>
 
-                    <!-- opcionais/ocultos para salvar metadados -->
-                    <input type="hidden" id="isbn">
-                    <input type="hidden" id="capa-url">
-                    <input type="hidden" id="google-id">
+                    <!-- ocultos/metadados -->
+                    {{ form.isbn }} {{ form.capa_url }} {{ form.google_id }}
 
                     <div class="flex space-x-3 pt-4">
-                        <button type="button"
-                                id="cancelBtn"
+                        <button type="button" id="cancelBtn"
                                 class="flex-1 px-3 py-2 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-200 hover:text-slate-700 transition-colors">
                             Cancelar
                         </button>
+
                         <button type="submit"
                                 class="flex-1 px-3 py-2 bg-gradient-to-r from-[var(--great-green)] to-[var(--mid-blue)]
-                                       text-white rounded-xl
-                                       hover:brightness-110
-                                       transition duration-300 ease-in-out cursor-pointer font-medium">
+                                       text-white rounded-xl hover:brightness-110 transition duration-300 ease-in-out cursor-pointer font-medium">
                             Adicionar Livro
                         </button>
                     </div>
@@ -132,4 +185,121 @@
 
 {% block script %}
     <script src="{% static 'js/pesquisarLivro.js' %}"></script>
+    <script>
+        const fCategoria = document.getElementById('categoria-livro');
+        const hCategoria = document.getElementById('categoria-livro-hidden');
+
+        const btnAbrir = document.getElementById('abrir-dropdown-categoria');
+        const dropdown = document.getElementById('dropdown-categoria');
+        const inpNova = document.getElementById('nova-categoria-input');
+        const btnCriar = document.getElementById('criar-categoria-btn');
+        const btnCancelar = document.getElementById('cancelar-categoria-btn');
+        const feedback = document.getElementById('categoria-feedback');
+
+        const CATEGORIA_CREATE_URL = "{% url 'api:criar_categoria' %}"; // <-- sua URL
+        const csrfFromInput = () =>
+            document.querySelector('input[name=csrfmiddlewaretoken]')?.value;
+
+        function openDropdown() {
+            dropdown.classList.remove('hidden');
+            feedback.classList.add('hidden');
+            feedback.textContent = "";
+            inpNova.value = "";
+            setTimeout(() => inpNova.focus(), 0);
+        }
+
+        function closeDropdown() {
+            dropdown.classList.add('hidden');
+        }
+
+        function selectIfExists(text) {
+            const target = text.trim().toLowerCase();
+            for (const opt of fCategoria.options) {
+                const txt = (opt.textContent || "").trim().toLowerCase();
+                if (txt === target) {
+                    fCategoria.value = opt.value;
+                    fCategoria.dispatchEvent(new Event('change'));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        async function criarCategoria() {
+            const nome = inpNova.value.trim();
+            if (!nome) {
+                feedback.textContent = "Digite um nome.";
+                feedback.classList.remove('hidden');
+                return;
+            }
+
+            // Se já existe no select, só seleciona
+            if (selectIfExists(nome)) {
+                hCategoria.value = ""; // limpa fallback
+                closeDropdown();
+                return;
+            }
+
+            btnCriar.disabled = true;
+            feedback.textContent = "Criando…";
+            feedback.classList.remove('hidden');
+
+            try {
+                const res = await fetch(CATEGORIA_CREATE_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfFromInput() || ""
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({nome})
+                });
+
+                if (!res.ok) throw new Error("Falha ao criar categoria");
+                const data = await res.json(); // espere {id, nome} no retorno
+
+                // adiciona no select e seleciona
+                const opt = new Option(data.nome, data.id, true, true);
+                fCategoria.add(opt);
+                fCategoria.dispatchEvent(new Event('change'));
+
+                hCategoria.value = ""; // não preciso do fallback
+                closeDropdown();
+
+            } catch (err) {
+                // Fallback: manda no hidden p/ backend tratar na submissão normal
+                hCategoria.value = nome;
+                feedback.textContent = "Não consegui criar via AJAX. Vou enviar no submit do formulário.";
+            } finally {
+                btnCriar.disabled = false;
+            }
+        }
+
+        // Eventos
+        btnAbrir.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.contains('hidden') ? openDropdown() : closeDropdown();
+        });
+        btnCancelar.addEventListener('click', closeDropdown);
+        btnCriar.addEventListener('click', criarCategoria);
+
+        inpNova.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                criarCategoria();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                closeDropdown();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#dropdown-categoria') &&
+                !e.target.closest('#abrir-dropdown-categoria')) {
+                closeDropdown();
+            }
+        });
+    </script>
+
 {% endblock %}

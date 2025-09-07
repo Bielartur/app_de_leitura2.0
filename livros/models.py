@@ -13,7 +13,7 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nome
 
-class Livros(models.Model):
+class Livro(models.Model):
     class Avaliacao(models.IntegerChoices):
         PESSIMO = 1, "Péssimo"
         RUIM = 2, "Ruim"
@@ -22,14 +22,18 @@ class Livros(models.Model):
         OTIMO = 5, "Ótimo"
 
     titulo = models.CharField(max_length=100)
+    autor = models.CharField("Autor", max_length=100)
     pag_atual = models.PositiveIntegerField(default=0)
     total_paginas = models.PositiveIntegerField(null=False, blank=False)
     avaliacao = models.IntegerField(
         choices=Avaliacao.choices,
-        default=Avaliacao.REGULAR,
+        null=True,
     )
-    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
-    criado_em = models.DateTimeField(auto_now_add=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, default=1)
+    capa_url = models.URLField("URL Imagem", null=True, blank=True)
+    isbn = models.CharField(max_length=32, null=True, blank=True, unique=True)
+    google_id = models.CharField(max_length=32, null=True, blank=True, unique=True)
+    data_inicio = models.DateField(default=timezone.now)
     atualizado_em = models.DateTimeField(auto_now=True)
     data_conclusao = models.DateTimeField(null=True, blank=True)
 
@@ -53,7 +57,7 @@ class LeituraDiaria(models.Model):
         related_name="leituras"
     )
     livro = models.ForeignKey(
-        Livros,
+        Livro,
         on_delete=models.CASCADE,
         related_name="leituras"
     )

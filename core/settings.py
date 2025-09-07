@@ -46,7 +46,8 @@ INSTALLED_APPS = [
 
     # Meus Apps
     "contas",
-    "livros"
+    "livros",
+    "api"
 ]
 
 MIDDLEWARE = [
