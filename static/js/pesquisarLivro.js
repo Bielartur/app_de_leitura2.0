@@ -74,21 +74,14 @@ function render(items) {
 }
 
 function lockInput(el) {
-  el.disabled = true;
-  el.classList.add(
-    'bg-slate-100',        // fundo mais escuro
-    'text-slate-600',      // texto mais “apagado”
-    'cursor-not-allowed'   // cursor de desabilitado
-  );
-  // remove estados de foco azuis para não confundir o usuário
-  el.classList.remove('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+  el.readOnly = true;                        // <-- em vez de disabled
+  el.classList.add('bg-slate-100','text-slate-600','cursor-not-allowed');
+  el.classList.remove('focus:ring-2','focus:ring-blue-500','focus:border-blue-500');
 }
-
 function unlockInput(el) {
-  el.disabled = false;
-  el.classList.remove('bg-slate-100', 'text-slate-600', 'cursor-not-allowed');
-  // restaura foco padrão (ajuste conforme seu design)
-  el.classList.add('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+  el.readOnly = false;                       // <-- libera edição
+  el.classList.remove('bg-slate-100','text-slate-600','cursor-not-allowed');
+  el.classList.add('focus:ring-2','focus:ring-blue-500','focus:border-blue-500');
 }
 
 function fillForm(book) {
