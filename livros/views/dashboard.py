@@ -1,15 +1,14 @@
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
-from livros.models import Livros
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+
+from livros.forms import LivroForm
 
 
-class LivroListView(ListView):
-    model = Livros                          # modelo a ser listado
+class LivroListView(CreateView):
+    form_class = LivroForm
     template_name = "livros/dashboard.html"     # template usado
     context_object_name = "livros"          # nome da variável no template
-    paginate_by = 10                        # paginação automática (10 por página)
+    success_url = reverse_lazy("livros:dashboard")
 
-    # opcional: personalizar a query
-    def get_queryset(self):
-        # exemplo: ordenar ou filtrar
-        return Livros.objects.order_by("-criado_em")
+    def get_success_url(self):
+        return super(LivroListView, self).get_success_url()
