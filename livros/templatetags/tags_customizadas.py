@@ -14,3 +14,15 @@ def sub(a, b):
         return max(0, int(a) - int(b))
     except (TypeError, ValueError):
         return 0
+
+@register.filter
+def dotfloat(value, digits=2):
+    try:
+        return f"{float(value):.{digits}f}"
+    except (TypeError, ValueError):
+        return ""
+
+@register.simple_tag(takes_context=True)
+def userbook(context, livro):
+    user = context["request"].user
+    return livro.user_books.filter(usuario=user).first()

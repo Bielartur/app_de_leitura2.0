@@ -7,4 +7,7 @@ resposta, irá aparecer o botão mais apagado e com um símbolo de loading rodan
 seja de sucesso a página deverá recarregar e aparecer um popup verdinho no canto da tela
 confirmando que "A Chave de Acesso foi atualizada com sucesso".
 
-2 -
+2 - Quando o usuário colocar para adicionar um livro, pode acontecer 2 coisas. Caso o livro já
+exista um registro no banco de dados, ele vai apenas referenciar aquele livro, como livro em
+andamento daquele usuário. Caso contrário, ele vai realmente adicionar aquele livro no banco de
+dados e também referenciar como livro em andamento para aquele mesmo usuário.

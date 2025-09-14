@@ -12,4 +12,4 @@ class LivroDoneListView(ListView):
     # opcional: personalizar a query
     def get_queryset(self):
         # exemplo: ordenar ou filtrar
-        return Livro.objects.order_by("-data_inicio")
+        return Livro.objects.all()
