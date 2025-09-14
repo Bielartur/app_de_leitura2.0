@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load cards %}
 
 {% block title %}
     Dashboard
@@ -27,12 +28,11 @@
             </div>
 
             <div class="w-full py-4 grid grid-cols-[repeat(auto-fit,_minmax(16rem,_1fr))] gap-5">
+              {% dash_card    'mes'    qtd=dashboard.progresso_meta_mensal.lidas pct_concluida=dashboard.progresso_meta_mensal.pct %}
 
-                {% include 'includes/card.html' with qtd=857 bg_color="indigo-100" text_color="[var(--mid-blue)]" class_icon="fa-solid fa-book" pct_concluida=65 label="Este mês" descricao_qtd="páginas lidas" animation_delay="0.1s" %}
+              {% dash_card 'sequencia' qtd=dashboard.dias_consecutivos %}
 
-                {% include 'includes/card.html' with qtd=12 bg_color="cyan-100" text_color="[var(--great-green)]" class_icon="fa-solid fa-fire" label="Sequência" descricao_qtd="dias consecutivos" texto_positivo="Mantendo o rítmo" animation_delay="0.2s" %}
-
-                {% include 'includes/card.html' with qtd=3 bg_color="violet-100" text_color="violet-600" class_icon="fa-regular fa-calendar" label="Em andamento" descricao_qtd="livros ativos" add_livro=True animation_delay="0.3s" %}
+              {% dash_card 'andamento' qtd=dashboard.qtd_livros_ativos add_livro=True %}
             </div>
 
             <div class="p-6 pb-2 flex flex-col flex-grow gap-2 bg-white text-slate-600 shadow-md rounded-xl w-full fade-in"
@@ -53,19 +53,19 @@
                     <div class="flex flex-col items-end">
                         <p class="text-sm text-slate-500 whitespace-nowrap">
                             <i class="fa-solid fa-bullseye"></i>
-                            <span>Meta: 1000 páginas</span>
+                            <span>Meta: {{ request.user.meta_mensal_efetiva|default:0 }} páginas</span>
                         </p>
-                        <strong class="text-slate-800 text-2xl">847 / 1000</strong>
+                        <strong class="text-slate-800 text-2xl">{{ dashboard.progresso_meta_mensal.lidas }} / {{ request.user.meta_mensal_efetiva|default:0 }}</strong>
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-2">
                     <div class="flex justify-between items-center mt-2">
                         <p class="text-sm text-slate-600 font-semibold">Progresso da meta</p>
-                        <strong class="text-sm text-semibold text-[var(--great-green)]">85%</strong>
+                        <strong class="text-sm text-semibold text-[var(--great-green)]">{{ dashboard.progresso_meta_mensal.pct }}%</strong>
                     </div>
                     <div class="w-full h-[0.8rem] rounded-full bg-gray-200">
-                        <div class="h-full rounded-full relative overflow-hidden fill" style="--target: 85%"></div>
+                        <div class="h-full rounded-full relative overflow-hidden fill" style="--target: {{ dashboard.progresso_meta_mensal.pct }}%"></div>
                     </div>
                     <div class="flex justify-between items-center">
                         <p class="text-[0.75rem] text-slate-500">Faltam 153 páginas</p>
@@ -82,7 +82,7 @@
         </section>
 
         <section class="mb-12 max-w-6xl mx-auto px-4 fade-in xl:px-0"
-                 style="opacity: 1; transform: none; animation-delay: 0.5s">
+                 style="opacity: 0; transform: none; animation-delay: 0.5s">
             <div class="flex items-center justify-between gap-4 mb-6">
                 <h2 class="text-2xl font-bold text-slate-800">
                     Livros em Andamento
@@ -100,17 +100,17 @@
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
 
-                {% include 'livros/includes/card_livro_andamento.html' with titulo="O Poder do Hábito" autor="Charles Duhigg" dias_em_andamento=592 pag_totais=408 pag_atual=245 progresso_pct=65 pag_restantes=163 pct_restante=40 url_img="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=300" %}
+                {% for user_book in livros_em_andamento %}
 
-                {% include 'livros/includes/card_livro_andamento.html' with titulo="Sapiens" autor="Yuval Noah Harari" dias_em_andamento=599 pag_totais=512 pag_atual=156 progresso_pct=30 pag_restantes=356 pct_restante=70 url_img="https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300" %}
+                {% include 'livros/includes/card_livro_andamento.html' with livro=user_book.livro %}
 
-                {% include 'livros/includes/card_livro_andamento.html' with titulo="Hábitos Atômicos" autor="James Clear" dias_em_andamento=587 pag_totais=320 pag_atual=89 progresso_pct=28 pag_restantes=231 pct_restante=72 url_img="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=300" %}
+                {% endfor %}
 
             </div>
         </section>
 
         <section class="pb-8 max-w-6xl mx-auto px-4 fade-in xl:px-0"
-                 style="opacity: 1; transform: none; animation-delay: 0.8s;">
+                 style="opacity: 0; transform: none; animation-delay: 0.8s;">
             <div class="flex items-center justify-between gap-4 mb-6">
                 <h2 class="text-2xl font-bold text-slate-800">
                     Concluídos Recentemente
@@ -135,100 +135,9 @@
 {% endblock %}
 
 {% block script %}
+    {{ dashboard.diario|json_script:"diario-json" }}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{% static 'js/abrirModalLivro.js' %}"></script>
-    <script>
-        /**
-         * Gráfico de barras com degradê (tema claro).
-         * @param {string|HTMLElement} el
-         * @param categories:string[], data:number[], title?:string, colorFrom?:string, colorTo?:string opts
-         */
-        function renderBarChartGradient(el, {
-            categories,
-            data,
-            title = '',
-            colorFrom = '#F59E0B', // amber-500
-            colorTo = '#EF4444'  // red-500
-        }) {
-            const target = typeof el === 'string' ? document.querySelector(el) : el;
-
-            const options = {
-                chart: {type: 'bar', height: 260, toolbar: {show: false}, background: 'transparent'},
-                theme: {mode: 'light'},
-                series: [{name: title || 'Série', data}],
-                colors: [colorFrom],
-                xaxis: {
-                    categories,
-                    axisBorder: {show: false},
-                    axisTicks: {show: false},
-                    labels: {
-                        formatter: (value) => value // padrão = mostra tudo
-                    }
-                },
-                yaxis: {labels: {formatter: v => v.toLocaleString('pt-BR')}},
-                plotOptions: {
-                    bar: {
-                        borderRadius: 4,
-                        columnWidth: '75%',
-                        dataLabels: {position: 'top'}
-                    }
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: v => v,
-                    offsetY: -20,
-                    style: {fontSize: '12px'}
-                },
-                grid: {strokeDashArray: 4},
-                tooltip: {theme: 'light'},
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        type: 'vertical',
-                        shade: 'light',
-                        shadeIntensity: 0.2,
-                        gradientToColors: [colorTo],
-                        opacityFrom: 0.95,
-                        opacityTo: 0.85,
-                        stops: [0, 100]
-                    }
-                },
-                title: title ? {text: title, style: {fontWeight: 600}} : undefined,
-
-                // <<< Ajuste responsivo >>>
-                responsive: [
-                    {
-                        breakpoint: 768, // md do Tailwind
-                        options: {
-                            xaxis: {
-                                labels: {
-                                    formatter: (value) => {
-                                        // mostra só números pares
-                                        return parseInt(value) % 2 === 0 ? value : '';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ]
-            };
-
-            const chart = new ApexCharts(target, options);
-            chart.render();
-            return chart;
-        }
-
-        // Exemplo de uso
-        const categories = Array.from({length: 30}, (_, i) => String(i + 1).padStart(2, '0'));
-        const data = [43, 22, 28, 52, 27, 29, 35, 33, 30, 32, 34, 29, 31, 15, 32, 35, 12, 40, 42, 39, 41, 31, 44, 46, 12, 47, 49, 50, 25, 15];
-
-        const chart = renderBarChartGradient('#bar-chart', {
-            title: ' ',
-            categories,
-            data,
-            colorFrom: 'hsl(252, 46%, 33%)',
-            colorTo: 'hsl(186, 80%, 35%)'
-        });
-    </script>
+    <script src="{% static 'js/gerarGrafico.js' %}"></script>
 
 {% endblock %}
