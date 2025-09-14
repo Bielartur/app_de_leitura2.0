@@ -1,55 +1,306 @@
-<div class="bg-white rounded-2xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 group fade-in"
-     style="animation-delay: 0.6s">
+{% load tags_customizadas %}
+
+{% userbook livro as ub %}
+<div
+        x-data="bookCard($el.dataset)"
+        data-url="{% url 'api:adicionar_pagina' livro.id %}"
+        data-pagina-inicial="{{ ub.pagina_atual|default_if_none:0 }}"
+        data-total="{{ livro.total_paginas|default_if_none:0 }}"
+        class="bg-white rounded-2xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 group fade-in"
+        style="animation-delay: 0.6s"
+>
     <div class="flex items-start space-x-4 mb-4">
-        <div class="relative"><img
-                src="{{ url_img }}"
-                alt="O Poder do Hábito"
-                class="w-16 h-20 object-cover rounded-lg shadow-md group-hover:scale-105 transition-transform duration-300">
+        <div class="relative">
+            <img
+                    src="{{ livro.capa_url }}"
+                    alt="O Poder do Hábito"
+                    class="w-16 h-20 object-cover rounded-lg shadow-md group-hover:scale-105 transition-transform duration-300"
+            />
         </div>
         <div class="flex-1 min-w-0">
             <h3 class="font-bold text-slate-800 text-lg leading-tight mb-1 truncate">
-                {{ titulo }}
+                {{ livro.titulo }}
             </h3>
-            <p class="text-slate-600 text-sm mb-2">{{ autor }}</p>
+            <p class="text-slate-600 text-sm mb-2">{{ livro.autor }}</p>
             <div class="flex items-center space-x-4 text-xs text-slate-500">
                 <div class="flex items-center space-x-1">
                     <i class="fa-regular fa-clock"></i>
-                    <span>{{ dias_em_andamento }} dias</span></div>
-                <span>{{ pag_totais }} páginas</span></div>
+                    <span>{{ ub.dias_em_leitura|default:"0" }} dias</span>
+                </div>
+                <span>{{ livro.total_paginas }} páginas</span>
+            </div>
         </div>
     </div>
     <div class="space-y-4">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <div class="flex items-center space-x-2">
-                    <span class="text-lg font-bold text-slate-800">{{ pag_atual }}</span>
-                    <span class="text-sm text-slate-500">/ {{ pag_totais }} páginas</span>
-                    <button class="p-1 text-slate-400 hover:text-slate-600 transition-colors">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
+                    <!-- Exibição normal -->
+                    <template x-if="!isEditing">
+                        <span class="text-lg font-bold text-slate-800" x-text="paginaAtual"></span>
+                    </template>
+
+                    <!-- Campo de edição -->
+                    <template x-if="isEditing">
+                        <input
+                                x-ref="pgInput"
+                                type="number"
+                                inputmode="numeric"
+                                min="0"
+                                :max="total"
+                                step="1"
+                                class="text-md font-semibold text-slate-800 w-20 border border-slate-300 rounded-md px-2 py-1 focus:ring-2 focus:ring-[var(--great-green)] outline-none"
+                                x-model.number="tempPage"
+                                @keydown.enter.prevent="saveEdit()"
+                                @keydown.esc.prevent="cancelEdit()"
+                                @blur="saveEdit()"
+                        />
+                    </template>
+
+                    <span class="text-sm text-slate-500">/ {{ livro.total_paginas }}
+                        <template x-if="!isEditing">
+                            <span>páginas</span>
+                        </template>
+                    </span>
+
+                    <template x-if="isEditing">
+                        <div class="flex gap-2">
+                            <button
+                                    class="px-2 py-1 rounded bg-gradient-to-r from-[var(--great-green)] to-[var(--mid-blue)] text-white text-xs transition-colors cursor-pointer"
+                                    @click="saveEdit()"
+                                    :disabled="busy || !isValid"
+                                    :class="(busy || !isValid) ? 'opacity-60 cursor-not-allowed' : ''"
+                            >OK
+                            </button>
+
+                            <button
+                                    class="flex items-center space-x-1 px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs rounded transition-colors cursor-pointer"
+                                    @click="cancelEdit()"
+                            >Cancelar
+                            </button>
+                        </div>
+                    </template>
+
+                    <template x-if="!isEditing">
+                        <!-- Botão editar -->
+                        <button
+                                class="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+                                :disabled="busy"
+                                @click="beginEdit()"
+                                :class="busy ? 'opacity-60 cursor-not-allowed' : ''"
+                                title="Editar página atual"
+                        >
+                            <i class="fa-solid fa-pen cursor-pointer"></i>
+                        </button>
+                    </template>
                 </div>
             </div>
-            <span class="text-sm font-medium text-[var(--great-green)]">{{ progresso_pct }}%</span>
+            <span class="text-sm font-medium text-[var(--great-green)]"><span
+                    x-text="pctRounded">{{ ub.progresso_pct|default_if_none:0|floatformat:0 }}</span>%</span>
+
         </div>
         <div class="w-full bg-slate-200 rounded-full h-2">
-            <div class="bg-gradient-to-r from-[var(--great-green)] to-[var(--lighter-color)] h-2 rounded-full relative overflow-hidden"
-                 style="width: 60.049%;">
-                <div class="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+            <div
+                    class="bg-gradient-to-r from-[var(--great-green)] to-[var(--lighter-color)] h-2 rounded-full relative overflow-hidden transition-all ease duration-300"
+                    :style="`width: ${pct.toFixed(2)}%`"
+                    style="width: {{ ub.progresso_pct|default_if_none:0|dotfloat:2 }}%;"
+            >
+                <div
+                        class="absolute inset-0 bg-white/20 rounded-full animate-pulse"
+                ></div>
             </div>
         </div>
         <div class="flex items-center justify-between text-xs text-slate-500">
-            <span>Restam {{ pag_restantes }} páginas</span><span>{{ pct_restante }}% restante</span></div>
-        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100"><span
-                class="text-xs text-slate-500">Adicionar:</span>
-            <button class="flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded transition-colors">
+      <span>Restam <span x-text="faltam">{{ ub.faltam_paginas|default:"0" }}</span> páginas</span
+      ><span x-text="`${faltamPct}%`">{{ ub.faltam_pct|default:"100" }}% restante</span>
+        </div>
+        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+            <span class="text-xs text-slate-500">Adicionar: </span>
+            <button
+                    @click="add(5)"
+                    :disabled="busy"
+                    :class="busy ? 'opacity-60 cursor-not-allowed' : ''"
+                    class="add-pags flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded transition-colors cursor-pointer"
+            >
                 <i class="fa-solid fa-plus"></i>
-                <span>5p</span></button>
-            <button class="flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded transition-colors">
+                <span>5p</span>
+            </button>
+            <button
+                    @click="add(10)"
+                    :disabled="busy"
+                    :class="busy ? 'opacity-60 cursor-not-allowed' : ''"
+                    class="add-pags flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded transition-colors cursor-pointer"
+            >
                 <i class="fa-solid fa-plus"></i>
-                <span>10p</span></button>
-            <button class="flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded transition-colors">
+                <span>10p</span>
+            </button>
+            <button
+                    @click="add(25)"
+                    :disabled="busy"
+                    :class="busy ? 'opacity-60 cursor-not-allowed' : ''"
+                    class="add-pags flex items-center space-x-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded transition-colors cursor-pointer"
+            >
                 <i class="fa-solid fa-plus"></i>
-                <span>25p</span></button>
+                <span>25p</span>
+            </button>
         </div>
     </div>
 </div>
+
+{% block scripts %}
+    <script>
+        function bookCard(props) {
+            const url = props.url;
+            const start = Number(props.paginaInicial ?? 0);
+            const total = Number(props.total ?? 0);
+
+            return {
+                // estado
+                url,
+                paginaAtual: Number.isFinite(start) ? start : 0,
+                total: Number.isFinite(total) ? total : 0,
+                busy: false,
+                isEditing: false,
+                tempPage: null,
+
+                // computados existentes
+                get pct() {
+                    return this.total > 0 ? Math.min(100, Math.max(0, (this.paginaAtual / this.total) * 100)) : 0
+                },
+                get pctRounded() {
+                    return Math.round(this.pct)
+                },
+                get faltam() {
+                    return Math.max(0, this.total - this.paginaAtual)
+                },
+                get faltamPct() {
+                    return Math.max(0, 100 - this.pctRounded)
+                },
+
+                    // validação do input
+                get isValid() {
+                  const v = Number(this.tempPage);
+                  return Number.isFinite(v) && v >= 0 && v <= this.total;
+                },
+
+                getCookie(name) {
+                    let v = null;
+                    if (document.cookie) {
+                        document.cookie.split(";").forEach(c => {
+                            c = c.trim();
+                            if (c.startsWith(name + "=")) v = decodeURIComponent(c.split("=")[1]);
+                        });
+                    }
+                    return v;
+                },
+
+                // ---- NOVO: edição absoluta ----
+                beginEdit() {
+                    if (this.busy) return;
+                    this.tempPage = this.paginaAtual;
+                    this.isEditing = true;
+                    this.$nextTick(() => this.$refs.pgInput?.focus());
+                },
+
+                async saveEdit() {
+                    if (!this.isEditing) return;
+                    // valida/clampa
+                    let v = Number(this.tempPage);
+                    if (!Number.isFinite(v)) {
+                        this.cancelEdit();
+                        return;
+                    }
+                    v = Math.max(0, Math.min(this.total, v));
+
+                    // se não mudou, só sai do modo edição
+                    if (v === this.paginaAtual) {
+                        this.isEditing = false;
+                        return;
+                    }
+
+                    try {
+                        this.busy = true;
+                        const r = await fetch(this.url, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": this.getCookie("csrftoken"),
+                            },
+                            body: JSON.stringify({pagina_atual: v}),
+                        });
+
+                        if (!r.ok) {
+                            const txt = await r.text().catch(() => "");
+                            throw new Error(txt || `Falha ao salvar (${r.status})`);
+                        }
+
+                        const ct = r.headers.get("content-type") || "";
+                        const data = ct.includes("application/json") ? await r.json() : null;
+
+                        // aceita resposta "flat" ou "nested"
+                        if (data) {
+                            if (typeof data.pagina_atual === "number") {
+                                this.paginaAtual = data.pagina_atual;
+                                if (typeof data.total_paginas === "number") this.total = data.total_paginas;
+                            } else if (data.userbook && typeof data.userbook.pagina_atual === "number") {
+                                this.paginaAtual = data.userbook.pagina_atual;
+                                if (typeof data.userbook.total_paginas === "number") this.total = data.userbook.total_paginas;
+                            }
+                        }
+                        this.isEditing = false;
+                    } catch (e) {
+                        console.error(e);
+                        alert(e.message || "Erro ao salvar página atual");
+                        // mantém em edição para o usuário corrigir
+                    } finally {
+                        this.busy = false;
+                    }
+                },
+
+                cancelEdit() {
+                    this.isEditing = false;
+                    this.tempPage = this.paginaAtual;
+                },
+
+                // ---- já existente: adicionar delta ----
+                async add(delta) {
+                    if (this.busy) return;
+                    this.busy = true;
+                    try {
+                        const r = await fetch(this.url, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": this.getCookie("csrftoken"),
+                            },
+                            body: JSON.stringify({delta_paginas: delta}),
+                        });
+                        if (!r.ok) {
+                            const txt = await r.text().catch(() => "");
+                            throw new Error(txt || `Falha ao salvar (${r.status})`);
+                        }
+                        const ct = r.headers.get("content-type") || "";
+                        const data = ct.includes("application/json") ? await r.json() : null;
+
+                        if (data) {
+                            if (typeof data.pagina_atual === "number") {
+                                this.paginaAtual = data.pagina_atual;
+                                if (typeof data.total_paginas === "number") this.total = data.total_paginas;
+                            } else if (data.userbook && typeof data.userbook.pagina_atual === "number") {
+                                this.paginaAtual = data.userbook.pagina_atual;
+                                if (typeof data.userbook.total_paginas === "number") this.total = data.userbook.total_paginas;
+                            }
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert(e.message || "Erro ao adicionar páginas");
+                    } finally {
+                        this.busy = false;
+                    }
+                },
+            };
+        }
+    </script>
+
+
+{% endblock %}
